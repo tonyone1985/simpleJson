@@ -35,10 +35,13 @@ func (j *Json) Set(key string, v interface{}) {
 func New() *Json {
 	return &Json{data: make(map[string]interface{})}
 }
-func NewJson(d []byte) *Json {
+func NewJson(d []byte) (*Json, error) {
 	var data interface{}
-	json.Unmarshal(d, &data)
-	return &Json{data: data}
+	err := json.Unmarshal(d, &data)
+	if err != nil {
+		return nil, err
+	}
+	return &Json{data: data}, nil
 }
 
 func Unmarshal(d []byte) *Json {
