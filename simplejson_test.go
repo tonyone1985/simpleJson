@@ -14,21 +14,14 @@ type t1tp struct {
 
 var teststr1 []byte = []byte(`
 {
-	"a1":9223372036854775807,
+	"a1":922337203685477,
 	"a2":"a22",
 	"a3":["arr1","arr2",333],
 	"a4":{"a41":51.1}
 }
 `)
 
-var teststr2 []byte = []byte(`
-[
-	"a1",295‬,
-	"a2","a22",
-	"a3",["arr1","arr2",333],
-	"a4",{"a41":51.1}
-]
-`)
+var teststr2 []byte = []byte(`["a1",295,"a2","a22","a3",["arr1","arr2",333],"a4",{"a41":51.1}]`)
 
 func Test_simpleJson(t *testing.T) {
 	aa := &t1tp{}
@@ -40,11 +33,13 @@ func Test_simpleJson(t *testing.T) {
 	j1, e := NewJson(teststr1)
 	if e != nil {
 		t.Errorf("newjson err")
+		log.Println(e)
 	}
 
 	j2, e := NewJson(teststr2)
 	if e != nil {
 		t.Errorf("newjson err")
+		log.Println(e)
 	}
 
 	if j1.Get("a3").GetIndex(2).AsInt() != 333 {
@@ -63,9 +58,12 @@ func Test_simpleJson(t *testing.T) {
 	if e != nil {
 		t.Errorf("Unmarshal error")
 	}
-	if j3.Get("a1").AsInt() != 1 ||
+	if j3.Get("a1").AsInt64() != 922337203685477 ||
 		j3.Get("a4").Get("a41").AsFloat32() != 51.1 {
 		t.Errorf("Unmarshal afte get error")
+		log.Println(j3.GetInt64("a1"))
+		log.Println(j3.Get("a4").GetFloat32("a41"))
+
 	}
 	barr2, e := j3.Marshal()
 	if len(barr) != len(barr2) {

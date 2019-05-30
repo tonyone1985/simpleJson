@@ -7,20 +7,30 @@ type Json struct {
 	data interface{}
 }
 
-func (j *Json) Get(key string) *Json {
+func (j *Json) Data() interface{} {
+	return j.data
+}
+func (j *Json) Interface(key string) interface{} {
 	m, ok := j.data.(map[string]interface{})
 	if ok {
 		v, _ok := m[key]
 		if _ok {
-			vv, isj := v.(*Json)
-			if isj {
-				return vv
-			} else {
-				return &Json{data: v}
-			}
+			return v
 		}
 	}
 	return nil
+}
+func (j *Json) IndexInterface(idx int) interface{} {
+	arr := j.data.([]interface{})
+	if len(arr) <= idx {
+		return nil
+	}
+	return arr[idx]
+}
+
+func (j *Json) Get(key string) *Json {
+
+	return &Json{data: j.Interface(key)}
 }
 func (j *Json) Set(key string, v interface{}) {
 	mp := j.data.(map[string]interface{})
@@ -75,16 +85,8 @@ func (j *Json) ArrayLen() int {
 }
 
 func (j *Json) GetIndex(idx int) *Json {
-	arr := j.data.([]interface{})
-	if len(arr) <= idx {
-		return nil
-	}
-	jo, ok := arr[idx].(*Json)
-	if ok {
-		return jo
-	} else {
-		return &Json{data: arr[idx]}
-	}
+
+	return &Json{data: j.IndexInterface(idx)}
 }
 
 func (j *Json) AsDefNum() float64 {
@@ -134,6 +136,94 @@ func (j *Json) AsFloat64() float64 {
 func (j *Json) AsString() string {
 
 	vi, ok := j.data.(string)
+	if ok {
+		return vi
+	}
+	return ""
+}
+
+func (j *Json) ParseDefNum(d interface{}) float64 {
+
+	if d == nil {
+		return 0
+	}
+
+	vf, ok := d.(float64)
+	if ok {
+		return vf
+	}
+	return 0
+}
+
+func (j *Json) GetInt(key string) int {
+	d := j.Interface(key)
+	if d == nil {
+		return 0
+	}
+	vi, ok := d.(int)
+	if ok {
+		return vi
+	}
+	return int(j.ParseDefNum(d))
+}
+func (j *Json) GetUint(key string) uint {
+	d := j.Interface(key)
+	if d == nil {
+		return 0
+	}
+	vi, ok := d.(uint)
+	if ok {
+		return vi
+	}
+	return uint(j.ParseDefNum(d))
+}
+func (j *Json) GetInt64(key string) int64 {
+	d := j.Interface(key)
+	if d == nil {
+		return 0
+	}
+	vi, ok := d.(int64)
+	if ok {
+		return vi
+	}
+	return int64(j.ParseDefNum(d))
+}
+func (j *Json) GetUint64(key string) uint64 {
+	d := j.Interface(key)
+	if d == nil {
+		return 0
+	}
+	vi, ok := d.(uint64)
+	if ok {
+		return vi
+	}
+	return uint64(j.ParseDefNum(d))
+}
+func (j *Json) GetFloat32(key string) float32 {
+
+	d := j.Interface(key)
+	if d == nil {
+		return 0
+	}
+	vi, ok := d.(float32)
+	if ok {
+		return vi
+	}
+	return float32(j.ParseDefNum(d))
+}
+func (j *Json) GetFloat64(key string) float64 {
+
+	d := j.Interface(key)
+
+	return j.ParseDefNum(d)
+}
+func (j *Json) GetString(key string) string {
+
+	d := j.Interface(key)
+	if d == nil {
+		return ""
+	}
+	vi, ok := d.(string)
 	if ok {
 		return vi
 	}
