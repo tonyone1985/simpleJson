@@ -96,7 +96,13 @@ func (j *Json) AsDefNum() float64 {
 	}
 	return 0
 }
-
+func (j *Json) AsBool() bool {
+	vi, ok := j.data.(bool)
+	if ok {
+		return vi
+	}
+	return false
+}
 func (j *Json) AsInt() int {
 	vi, ok := j.data.(int)
 	if ok {
@@ -154,7 +160,17 @@ func (j *Json) ParseDefNum(d interface{}) float64 {
 	}
 	return 0
 }
-
+func (j *Json) GetBool(key string) bool {
+	d := j.Interface(key)
+	if d == nil {
+		return false
+	}
+	vi, ok := d.(bool)
+	if ok {
+		return vi
+	}
+	return false
+}
 func (j *Json) GetInt(key string) int {
 	d := j.Interface(key)
 	if d == nil {
