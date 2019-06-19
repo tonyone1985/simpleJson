@@ -21,8 +21,8 @@ func (j *Json) Interface(key string) interface{} {
 	return nil
 }
 func (j *Json) IndexInterface(idx int) interface{} {
-	arr := j.data.([]interface{})
-	if len(arr) <= idx {
+	arr, ok := j.data.([]interface{})
+	if (!ok) || len(arr) <= idx {
 		return nil
 	}
 	return arr[idx]
