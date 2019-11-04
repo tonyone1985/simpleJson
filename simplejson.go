@@ -160,6 +160,9 @@ func (j *Json) ParseDefNum(d interface{}) float64 {
 	}
 	return 0
 }
+func (j *Json) Exist(key string) bool {
+	return j.Interface(key) != nil
+}
 func (j *Json) GetBool(key string) bool {
 	d := j.Interface(key)
 	if d == nil {
